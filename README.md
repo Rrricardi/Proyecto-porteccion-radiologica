@@ -1,4 +1,4 @@
-"# Proyecto-porteccion-radiologica" 
+## Proyecto-porteccion-radiologica"
 
 
 El proyecto consiste en el desarrollo de un sitio web interactivo destinado al cálculo de blindajes para instalaciones radiológicas, creado como parte de la asignatura Protección Radiológica. Su objetivo principal es proporcionar una herramienta accesible y práctica que facilite la estimación del espesor de blindaje necesario para diferentes equipos emisores de radiación ionizante, cumpliendo con los criterios técnicos y normativos aplicables.
