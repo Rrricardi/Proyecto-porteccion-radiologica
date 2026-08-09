@@ -19,8 +19,7 @@ El resultado muestra el espesor requerido en mm de concreto equivalente, junto c
 
 ```
 index.html     # versión autocontenida (recomendada) — CSS y JS embebidos
-styles.css     # hoja de estilos (si se usa la versión de 3 archivos)
-script.js      # lógica de cálculo (si se usa la versión de 3 archivos)
+
 ```
 
 > Si vas a editar el proyecto, es más cómodo trabajar con `styles.css` y `script.js` separados y luego enlazarlos desde `index.html` con `<link>` y `<script src>`. Para distribuir o compartir el archivo, usá la versión autocontenida: evita problemas de rutas rotas cuando los archivos se descargan o mueven por separado.
