@@ -1,19 +1,212 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protección Radiológica</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blindaje — Cálculo de barreras radiológicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenido a Protección Radiológica</h1>
-        <p class="info">Este software facilita el cálculo de blindajes con precisión y eficiencia.</p>
-        <button class="button" id="calcularBtn">Calcular Blindaje</button>
-        <p id="resultado"></p>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="masthead-left">
+      <p class="eyebrow">NCRP-147 · Ecuación de Archer</p>
+      <h1>Blindaje<span class="dot">.</span></h1>
+      <p class="subtitle">Espesor de barrera radiológica en concreto equivalente</p>
     </div>
-    
-    <script src="script.js"></script>
+    <div class="masthead-right" aria-hidden="true">
+      <svg viewBox="0 0 64 64" class="trefoil">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="32" cy="32" r="6" fill="currentColor"/>
+        <g>
+          <path d="M32 32 L32 10 A22 22 0 0 1 51 21 Z" fill="currentColor" opacity="0.9"/>
+          <path d="M32 32 L51 21 A22 22 0 0 1 51 43 Z" fill="currentColor" opacity="0.65" transform="rotate(120 32 32)"/>
+          <path d="M32 32 L51 21 A22 22 0 0 1 51 43 Z" fill="currentColor" opacity="0.65" transform="rotate(240 32 32)"/>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <!-- FORM -->
+    <section class="panel form-panel" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title">Parámetros de cálculo</h2>
+
+      <form id="calcForm" novalidate>
+
+        <fieldset class="field-group">
+          <legend>Tipo de barrera</legend>
+          <div class="toggle-row" role="radiogroup" aria-label="Tipo de barrera">
+            <label class="toggle">
+              <input type="radio" name="barrera" value="primaria" checked>
+              <span>Primaria</span>
+            </label>
+            <label class="toggle">
+              <input type="radio" name="barrera" value="secundaria">
+              <span>Secundaria</span>
+            </label>
+          </div>
+          <p class="hint" id="barreraHint">El haz útil incide directamente sobre la barrera.</p>
+        </fieldset>
+
+        <fieldset class="field-group" id="contactoGroup" hidden>
+          <legend>Origen de la radiación secundaria</legend>
+          <div class="toggle-row" role="radiogroup" aria-label="Contacto directo o indirecto">
+            <label class="toggle">
+              <input type="radio" name="contacto" value="directo" checked>
+              <span>Directo</span>
+            </label>
+            <label class="toggle">
+              <input type="radio" name="contacto" value="indirecto">
+              <span>Indirecto</span>
+            </label>
+          </div>
+          <p class="hint">Directo: fuga del tubo o dispersión del paciente. Indirecto: dispersión secundaria (ej. Bucky de pared).</p>
+        </fieldset>
+
+        <div class="field">
+          <label for="procedimiento">Procedimiento</label>
+          <select id="procedimiento" name="procedimiento" required>
+            <option value="camilla">Camilla</option>
+            <option value="bucky de pared">Bucky de pared</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="area">Área protegida</label>
+          <select id="area" name="area" required>
+            <option value="" disabled selected>Seleccione un área…</option>
+            <optgroup label="Ocupación total · T = 1">
+              <option value="1">Oficinas</option>
+              <option value="2">Salas de trabajo</option>
+              <option value="3">Salas de espera</option>
+              <option value="4">Laboratorios</option>
+              <option value="5">Enfermería</option>
+              <option value="6">Estaciones de trabajo</option>
+            </optgroup>
+            <optgroup label="Ocupación parcial · T = 0.2">
+              <option value="7">Pasillos públicos fuera de la sala de rayos X</option>
+              <option value="8">Baños</option>
+              <option value="9">Algunas áreas de hospitalización</option>
+            </optgroup>
+            <optgroup label="Ocupación baja · T = 0.125">
+              <option value="10">Pasillos privados</option>
+              <option value="11">Salas de descanso del personal</option>
+              <option value="12">Cuartos de almacenamiento poco usados</option>
+            </optgroup>
+            <optgroup label="Ocupación ocasional · T = 0.025">
+              <option value="13">Techos</option>
+              <option value="14">Áreas exteriores</option>
+              <option value="15">Cuartos de mantenimiento</option>
+              <option value="16">Almacenamiento sin personal frecuente</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="distancia">Distancia fuente–persona</label>
+            <div class="input-suffix">
+              <input type="number" id="distancia" name="distancia" min="0.1" step="0.1" placeholder="2.0" required>
+              <span>m</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="personas">Personas en el área</label>
+            <input type="number" id="personas" name="personas" min="1" step="1" placeholder="1" required>
+          </div>
+        </div>
+
+        <p class="error" id="formError" role="alert" hidden></p>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Calcular espesor</button>
+          <button type="reset" class="btn-ghost" id="resetBtn">Restablecer</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RESULTS + DIAGRAM -->
+    <section class="panel result-panel" aria-labelledby="result-title">
+      <h2 id="result-title" class="panel-title">Corte transversal</h2>
+
+      <div class="diagram-wrap">
+        <svg id="diagram" viewBox="0 0 520 260" role="img" aria-label="Diagrama de la barrera">
+          <!-- blueprint grid -->
+          <defs>
+            <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--grid)" stroke-width="0.6"/>
+            </pattern>
+            <marker id="arrowStart" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto">
+              <path d="M7,1 L1,4 L7,7" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+            </marker>
+            <marker id="arrowEnd" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M1,1 L7,4 L1,7" fill="none" stroke="var(--line)" stroke-width="1.4"/>
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="520" height="260" fill="url(#gridPattern)"/>
+
+          <!-- floor -->
+          <line x1="20" y1="220" x2="500" y2="220" stroke="var(--grid-strong)" stroke-width="1"/>
+
+          <!-- source -->
+          <g id="source" transform="translate(60,150)">
+            <rect x="-14" y="-14" width="28" height="28" rx="3" fill="var(--panel-raised)" stroke="var(--line)" stroke-width="1.4"/>
+            <circle cx="0" cy="0" r="5" fill="var(--accent)"/>
+          </g>
+          <text id="sourceLabel" x="60" y="196" text-anchor="middle" class="svg-label">Fuente</text>
+
+          <!-- beam -->
+          <path id="beamPath" d="M74,150 L214,150" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>
+
+          <!-- distance dimension line -->
+          <line id="dimLine" x1="60" y1="180" x2="220" y2="180" stroke="var(--line)" stroke-width="1" marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"/>
+          <text id="dimLabel" x="140" y="196" text-anchor="middle" class="svg-label mono">dp</text>
+
+          <!-- barrier -->
+          <rect id="barrier" x="214" y="70" width="16" height="150" fill="var(--panel-raised)" stroke="var(--line)" stroke-width="1.4"/>
+          <text id="barrierLabel" x="222" y="60" text-anchor="middle" class="svg-label mono">— mm</text>
+
+          <!-- protected zone -->
+          <rect x="260" y="70" width="230" height="150" fill="none" stroke="var(--grid-strong)" stroke-width="1" stroke-dasharray="3 4"/>
+          <text id="zoneLabel" x="375" y="60" text-anchor="middle" class="svg-label">Área protegida</text>
+
+          <g id="people"></g>
+        </svg>
+        <p class="diagram-note">Esquema ilustrativo, no está a escala.</p>
+      </div>
+
+      <div class="results" id="resultsWrap" hidden>
+        <div class="result-hero">
+          <span class="result-hero-label">Espesor requerido</span>
+          <span class="result-hero-value mono" id="resultX">0.00</span>
+          <span class="result-hero-unit">mm concreto eq.</span>
+        </div>
+        <dl class="breakdown mono">
+          <div><dt>Factor de ocupación T</dt><dd id="outT">—</dd></div>
+          <div><dt>K<sub>p</sub> (Gy·m²/persona-sem)</dt><dd id="outKp">—</dd></div>
+          <div><dt>B<sub>p</sub> transmisión</dt><dd id="outBp">—</dd></div>
+        </dl>
+      </div>
+
+      <div class="placeholder" id="placeholder">
+        <p>Completá el formulario y presioná <strong>Calcular espesor</strong> para ver el resultado y el corte de la barrera.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <p>P = 0.02 mSv/sem · U = 1 · Ecuación de Archer: X = (1/αγ)·ln[((1/B)<sup>γ</sup> + β/α) / (1 + β/α)]</p>
+  </footer>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
