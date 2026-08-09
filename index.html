@@ -7,7 +7,382 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<style>
+:root {
+  --bg: #0a1220;
+  --panel: #0f1c30;
+  --panel-raised: #16283f;
+  --grid: #16283f;
+  --grid-strong: #2a4363;
+  --line: #4fb3f2;
+  --accent: #f2a93b;
+  --accent-soft: #f2a93b33;
+  --good: #7fd9c4;
+  --danger: #ff7b6b;
+  --text: #e7edf5;
+  --text-dim: #8ea2ba;
+  --radius: 10px;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top left, #0d1b30 0%, var(--bg) 55%),
+    var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    radial-gradient(ellipse at top left, #0d1b30 0%, var(--bg) 55%);
+  background-size: 32px 32px, 32px 32px, cover;
+  color: var(--text);
+  font-family: var(--font-body);
+  padding: clamp(16px, 4vw, 48px);
+}
+
+.sheet {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ---------- Masthead ---------- */
+.masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--grid-strong);
+  padding-bottom: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+h1 .dot { color: var(--accent); }
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-dim);
+  margin: 8px 0 0;
+  max-width: 42ch;
+}
+
+.trefoil {
+  width: 56px;
+  height: 56px;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+/* ---------- Layout ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 780px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: linear-gradient(180deg, var(--panel) 0%, #0d1728 100%);
+  border: 1px solid var(--grid-strong);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--grid-strong);
+}
+
+/* ---------- Form ---------- */
+fieldset {
+  border: none;
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+legend {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.field { margin-bottom: 16px; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+select, input[type="number"] {
+  width: 100%;
+  background: var(--panel-raised);
+  border: 1px solid var(--grid-strong);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+select:focus, input:focus {
+  outline: none;
+  border-color: var(--line);
+  box-shadow: 0 0 0 3px rgba(79, 179, 242, 0.18);
+}
+
+select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
+                     linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 32px;
+}
+
+.input-suffix {
+  position: relative;
+}
+.input-suffix input { padding-right: 34px; }
+.input-suffix span {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin: 8px 0 0;
+}
+
+.toggle-row {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle {
+  flex: 1;
+  position: relative;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.toggle span {
+  display: block;
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid var(--grid-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  transition: all 0.15s ease;
+}
+
+.toggle input:checked + span {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.toggle input:focus-visible + span {
+  box-shadow: 0 0 0 3px rgba(79, 179, 242, 0.25);
+}
+
+.error {
+  background: rgba(255, 123, 107, 0.1);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 4px 0 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-primary, .btn-ghost {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #1a1204;
+  flex: 1;
+}
+.btn-primary:hover { background: #f7ba5c; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border-color: var(--grid-strong);
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--line); }
+
+/* ---------- Diagram ---------- */
+.diagram-wrap {
+  background: #08101d;
+  border: 1px solid var(--grid-strong);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+#diagram { width: 100%; height: auto; display: block; }
+
+.svg-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  fill: var(--text-dim);
+}
+.svg-label.mono { font-family: var(--font-mono); fill: var(--line); }
+
+.diagram-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: right;
+  margin: 6px 4px 0 0;
+  font-style: italic;
+}
+
+/* ---------- Results ---------- */
+.results { margin-top: 20px; }
+
+.result-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  background: rgba(127, 217, 196, 0.08);
+  border: 1px solid var(--good);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.result-hero-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  width: 100%;
+}
+
+.result-hero-value {
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--good);
+}
+
+.result-hero-unit {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.breakdown {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.breakdown div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--grid-strong);
+}
+
+.breakdown dt { color: var(--text-dim); font-weight: 400; }
+.breakdown dd { margin: 0; color: var(--text); }
+
+.placeholder {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px dashed var(--grid-strong);
+  border-radius: 8px;
+  color: var(--text-dim);
+  font-size: 13.5px;
+}
+
+/* ---------- Footer ---------- */
+.foot {
+  margin-top: 28px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+  </style>
 </head>
 <body>
 
@@ -207,6 +582,186 @@
   </footer>
 </div>
 
-<script src="script.js"></script>
+<script>
+// ---------- Datos constantes (misma física del original) ----------
+const U = 1;
+const P = 0.02;
+
+const blindaje_primario = {
+  'camilla': { alfa: 0.03994, beta: 0.1448, gamma: 0.4231, Kp1: 5.2 },
+  'bucky de pared': { alfa: 0.03552, beta: 0.1177, gamma: 0.6007, Kp1: 2.3 }
+};
+
+const blindaje_secundario = {
+  'camilla': { alfa: 0.0392, beta: 0.1464, gamma: 0.4486 },
+  'bucky de pared': { alfa: 0.0356, beta: 0.1079, gamma: 0.7705 }
+};
+
+const K_p_secundario = { directo: 0.049, indirecto: 0.034 };
+
+const T_BY_AREA_RANGE = [
+  { min: 1, max: 6, T: 1 },
+  { min: 7, max: 9, T: 0.2 },
+  { min: 10, max: 12, T: 0.125 },
+  { min: 13, max: 16, T: 0.025 }
+];
+
+function getT(areaId) {
+  const range = T_BY_AREA_RANGE.find(r => areaId >= r.min && areaId <= r.max);
+  return range ? range.T : null;
+}
+
+// ---------- DOM refs ----------
+const form = document.getElementById('calcForm');
+const barreraRadios = form.elements['barrera'];
+const contactoGroup = document.getElementById('contactoGroup');
+const barreraHint = document.getElementById('barreraHint');
+const formError = document.getElementById('formError');
+const resetBtn = document.getElementById('resetBtn');
+
+const resultsWrap = document.getElementById('resultsWrap');
+const placeholder = document.getElementById('placeholder');
+const resultX = document.getElementById('resultX');
+const outT = document.getElementById('outT');
+const outKp = document.getElementById('outKp');
+const outBp = document.getElementById('outBp');
+
+const barrierRect = document.getElementById('barrier');
+const barrierLabel = document.getElementById('barrierLabel');
+const beamPath = document.getElementById('beamPath');
+const dimLabel = document.getElementById('dimLabel');
+const peopleGroup = document.getElementById('people');
+
+// ---------- Interactividad: mostrar/ocultar campo "contacto" ----------
+function updateBarreraUI() {
+  const val = [...barreraRadios].find(r => r.checked).value;
+  const isSecundaria = val === 'secundaria';
+  contactoGroup.hidden = !isSecundaria;
+  barreraHint.textContent = isSecundaria
+    ? 'La radiación llega dispersada o por fuga, no en línea directa con el haz.'
+    : 'El haz útil incide directamente sobre la barrera.';
+  beamPath.setAttribute('stroke-dasharray', isSecundaria ? '3 5' : '6 4');
+  beamPath.setAttribute('opacity', isSecundaria ? '0.55' : '1');
+}
+[...barreraRadios].forEach(r => r.addEventListener('change', updateBarreraUI));
+updateBarreraUI();
+
+// ---------- Validación + cálculo ----------
+function showError(msg) {
+  formError.textContent = msg;
+  formError.hidden = false;
+}
+function clearError() {
+  formError.hidden = true;
+  formError.textContent = '';
+}
+
+function drawPeople(n) {
+  peopleGroup.innerHTML = '';
+  const max = 6;
+  const shown = Math.min(n, max);
+  const startX = 300;
+  const spacing = 34;
+  for (let i = 0; i < shown; i++) {
+    const cx = startX + i * spacing;
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.innerHTML = `
+      <circle cx="${cx}" cy="180" r="6" fill="var(--good)"/>
+      <rect x="${cx - 7}" y="188" width="14" height="20" rx="4" fill="var(--good)" opacity="0.85"/>
+    `;
+    peopleGroup.appendChild(g);
+  }
+  if (n > max) {
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', startX + max * spacing + 6);
+    text.setAttribute('y', 200);
+    text.setAttribute('class', 'svg-label mono');
+    text.textContent = `+${n - max}`;
+    peopleGroup.appendChild(text);
+  }
+}
+
+function updateDiagram({ dp, X, n }) {
+  // Distancia -> separación visual entre fuente y barrera (clamp para legibilidad)
+  const barrierX = Math.min(320, Math.max(140, 74 + dp * 30));
+  beamPath.setAttribute('x2', barrierX);
+  document.getElementById('dimLine').setAttribute('x2', barrierX);
+  dimLabel.setAttribute('x', (74 + barrierX) / 2);
+  dimLabel.textContent = `${dp.toFixed(2)} m`;
+
+  // Espesor -> ancho visual de la barrera (clamp, ilustrativo)
+  const width = Math.min(60, Math.max(6, X * 0.6));
+  barrierRect.setAttribute('x', barrierX);
+  barrierRect.setAttribute('width', width);
+  barrierLabel.setAttribute('x', barrierX + width / 2);
+  barrierLabel.textContent = `${X.toFixed(1)} mm`;
+
+  drawPeople(n);
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearError();
+
+  const barrera = [...barreraRadios].find(r => r.checked).value;
+  const procedimiento = form.elements['procedimiento'].value;
+  const dp = parseFloat(form.elements['distancia'].value);
+  const areaId = parseInt(form.elements['area'].value, 10);
+  const N = parseInt(form.elements['personas'].value, 10);
+
+  if (!procedimiento) return showError('Seleccioná un procedimiento.');
+  if (!dp || dp <= 0) return showError('Ingresá una distancia válida, mayor a 0.');
+  if (!areaId) return showError('Seleccioná el área protegida.');
+  if (!N || N < 1) return showError('Ingresá al menos 1 persona en el área.');
+
+  const T = getT(areaId);
+  if (T === null) return showError('El área seleccionada no es válida.');
+
+  let a, b, c, Kp;
+
+  if (barrera === 'primaria') {
+    const datos = blindaje_primario[procedimiento];
+    a = datos.alfa; b = datos.beta; c = datos.gamma;
+    Kp = (datos.Kp1 * U * N) / (dp ** 2);
+  } else {
+    const contacto = form.elements['contacto'].value;
+    const datos = blindaje_secundario[procedimiento];
+    a = datos.alfa; b = datos.beta; c = datos.gamma;
+    Kp = (K_p_secundario[contacto] * U * N) / (dp ** 2);
+  }
+
+  const Bp = P / (T * Kp);
+
+  let X;
+  if (Bp >= 1) {
+    // La transmisión requerida es mayor a 1: no se necesita blindaje adicional
+    X = 0;
+  } else {
+    X = (1 / (a * c)) * Math.log(((1 / Bp) ** c + (b / a)) / (1 + b / a));
+    if (!isFinite(X) || isNaN(X)) {
+      return showError('No fue posible calcular con estos valores. Revisá los datos ingresados.');
+    }
+    if (X < 0) X = 0;
+  }
+
+  // ---------- Mostrar resultados ----------
+  placeholder.hidden = true;
+  resultsWrap.hidden = false;
+  resultX.textContent = X.toFixed(2);
+  outT.textContent = T;
+  outKp.textContent = Kp.toFixed(5);
+  outBp.textContent = Bp < 1000 ? Bp.toExponential(3) : Bp.toFixed(2);
+
+  updateDiagram({ dp, X, n: N });
+});
+
+resetBtn.addEventListener('click', () => {
+  clearError();
+  resultsWrap.hidden = true;
+  placeholder.hidden = false;
+  setTimeout(updateBarreraUI, 0);
+});
+
+</script>
 </body>
 </html>
